@@ -82,7 +82,7 @@ app.get("/movies/:title", (req, res) => {
 });
 
 // return description of genre
-app.get('/genres/:Genre', (req, res) => {
+app.get('/genres/:genre', (req, res) => {
   res.json(
     movielist.find((genre) => {
       return movie.genre === req.params.genre;
