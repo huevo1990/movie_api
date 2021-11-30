@@ -83,20 +83,12 @@ app.get("/movies/:title", (req, res) => {
 
 // return description of genre
 app.get('/genres/:genre', (req, res) => {
-  res.json(
-    movielist.find((genre) => {
-      return movie.genre === req.params.genre;
-    })
-  );
+  res.send("Successful description of genre!");
 });
 
 // return director info
 app.get('/director/:DirectorName', (req, res) => {
-    res.json(
-      director.find((director) => {
-        return movie.director === req.params.director
-      })
-    );
+  res.send("Director info Successful!");
 });
 
 //adds new users
