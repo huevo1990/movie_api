@@ -75,23 +75,27 @@ app.get('/documentation', (req, res) => {
 
 //gets list of all movies
 app.get('/movies', (req, res)=> {
-  res.json(movielist);
+  res.json
+  (movielist);
 });
 
 //Get title of a single movie
-app.get('/movies/:title', (req, res) => {
-  res.json(movies.find((movies) =>
-    { return movie.name === req.params.title }));
+app.get("/movies/:title", (req, res) => {
+  res.json(
+    movielist.find((movie) => {
+      return movie.title === req.params.title;
+    })
+  );
 });
 
 // return description of genre
-app.get('/genres/:GenreName', (req, res) => {
-  res.json(movie.Genre);
+app.get('/genres/:genre', (req, res) => {
+  res.send("Successful description of genre!");
 });
 
 // return director info
-app.get('/directors/:DirectorName', (req, res) => {
-    res.status(200).json(movie.Director);
+app.get('/director/:DirectorName', (req, res) => {
+  res.send("Director info Successful!");
 });
 
 // Get all users
@@ -147,7 +151,7 @@ app.post('/users', (req, res) => {
 
 //allow users to update their info
 app.put('/users/:name/:Username', (req, res) => {
-  let user = users.find((user) => { return user.name === req.params.name });
+  res.send("User update info was successful!");
 });
 
 // Update a user's info, by username
@@ -199,16 +203,7 @@ app.post('/users/:Username/movies/:MovieID', (req, res) => {
 
 //allow users to remove a movie from favorites list
 app.delete('/users/:Username/movies/:MovieID', (req, res) => {
-  Users.findOneAndUpdate({ Username: req.params.Username },
-       { $pull: { FavoriteMovies: req.params.MovieID } },
-       { new: true })
-       .then((user) => {
-           res.status(200).json(user);
-       })
-       .catch((err) => {
-           console.error(err);
-           res.status(500).send('Error: ' + err);
-       });
+  res.send("Remove a movie from favorites list Successful!");
 });
 
 // Delete a user by username
