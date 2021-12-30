@@ -74,29 +74,52 @@ app.get('/documentation', (req, res) => {
 });
 
 //gets list of all movies
-app.get('/movies', (req, res)=> {
-  res.json
-  (movielist);
+app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) => {
+  myFlixDB.find()
+  .then((movies)=>{
+      res.status(201).json(movies);
+  })
+  .catch((err)=>{
+      console.error(err);
+      res.status(500).send('Error' + err);
+  });
 });
 
 //Get title of a single movie
-app.get("/movies/:title", (req, res) => {
-  res.json(
-    movielist.find((movie) => {
-      return movie.title === req.params.title;
+app.get('/movies/:title', passport.authenticate('jwt', { session: false }), (req, res) => {
+    myFlixDB.findOne({Title: req.params.title})
+    .then((movie)=>{
+        res.json(movie);
     })
-  );
-});
+    .catch((err)=>{
+        console.error(err);
+        res.status(500).send('Error' + err);
+    });
+   });
 
 // return description of genre
-app.get('/genres/:genre', (req, res) => {
-  res.send("Successful description of genre!");
-});
+app.get('/genres/:genre', passport.authenticate('jwt', { session: false }), (req, res) => {
+    myFlixDB.findOne({'Genre.Name': req.params.genre})
+    .then((movie)=>{
+        res.json(movie.Genre)
+    })
+    .catch((err)=>{
+        console.error(err);
+        res.status(500).send('Error' + err);
+    });
+})
 
 // return director info
-app.get('/director/:DirectorName', (req, res) => {
-  res.send("Director info Successful!");
-});
+app.get('/directors/:directorName', passport.authenticate('jwt', { session: false }), (req, res) => {
+    myFlixDB.findOne({'Director.Name': req.params.directorName})
+    .then((movie)=>{
+        res.json(movie.Director);
+    })
+    .catch((err)=>{
+        console.error(err);
+        res.status(500).send('Error' + err);
+    });
+})
 
 // Get all users
 app.get('/users', (req, res) => {
@@ -149,11 +172,6 @@ app.post('/users', (req, res) => {
     });
 });
 
-//allow users to update their info
-app.put('/users/:name/:Username', (req, res) => {
-  res.send("User update info was successful!");
-});
-
 // Update a user's info, by username
 /* We’ll expect JSON in this format
 {
@@ -202,8 +220,19 @@ app.post('/users/:Username/movies/:MovieID', (req, res) => {
 });
 
 //allow users to remove a movie from favorites list
-app.delete('/users/:Username/movies/:MovieID', (req, res) => {
-  res.send("Remove a movie from favorites list Successful!");
+app.delete('/users/:userName/movies/:title', passport.authenticate('jwt', { session: false }), (req, res) => {
+    Users.findOneAndUpdate({userName: req.params.userName}, {
+        $pull: {FavoriteMovies: req.params.title}
+    },
+    { new: true},
+   (err, updatedUser) => {
+       if (err) {
+           console.error(err);
+           res.status(500).send('Error' + err);
+       } else {
+           res.json(updatedUser);
+       }
+   });
 });
 
 // Delete a user by username
